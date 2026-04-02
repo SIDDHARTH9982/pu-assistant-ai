@@ -14,7 +14,21 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      process.env.FRONTEND_URL,
+    ].filter(Boolean);
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin || allowedOrigins.some(o => origin.startsWith(o.replace('https://', '').replace('http://', '')))) {
+      callback(null, true);
+    } else if (origin && (origin.includes('vercel.app') || origin.includes('netlify.app') || origin.includes('render.com'))) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all for now — restrict after deployment if needed
+    }
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
