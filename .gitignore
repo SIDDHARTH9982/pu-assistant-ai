@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Environment Variables (NEVER commit this - contains your API key!)
+backend/.env
+.env
+.env.local
+.env.production
+
+# Build outputs
+frontend/dist/
+frontend/build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+# MongoDB local data (no need to commit database files)
+data/
+
+# Temporary files
+*.tmp
+*.temp
