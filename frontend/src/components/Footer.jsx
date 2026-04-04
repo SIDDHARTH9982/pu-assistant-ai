@@ -89,6 +89,26 @@ const Footer = () => {
           <p className="text-gray-500 text-sm">
             © 2024 PU Assistant AI · Poornima University, Jaipur · All rights reserved
           </p>
+          <p className="text-gray-400 text-sm flex items-center gap-1">
+            Made by <span className="text-white font-semibold mx-1">Siddharth</span>
+            <span
+              className="inline-block text-red-500"
+              style={{
+                animation: 'heartbeat 1.2s ease-in-out infinite',
+                display: 'inline-block',
+                fontSize: '1.1rem',
+              }}
+            >❤️</span>
+            <style>{`
+              @keyframes heartbeat {
+                0%   { transform: scale(1); }
+                14%  { transform: scale(1.3); }
+                28%  { transform: scale(1); }
+                42%  { transform: scale(1.2); }
+                70%  { transform: scale(1); }
+              }
+            `}</style>
+          </p>
           <div className="flex items-center gap-4">
             {[
               { icon: FaTwitter, href: '#', label: 'Twitter' },
