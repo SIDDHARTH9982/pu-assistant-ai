@@ -18,6 +18,7 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
+    { label: 'Report', href: '/presentation.html', external: true },
     { label: 'Features', href: '#features' },
     { label: 'Use Cases', href: '#use-cases' },
     { label: 'Pricing', href: '#pricing' },
@@ -65,13 +66,25 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <button
-                key={link.label}
-                onClick={() => scrollToSection(link.href)}
-                className="nav-link"
-              >
-                {link.label}
-              </button>
+              link.external ? (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="nav-link"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <button
+                  key={link.label}
+                  onClick={() => scrollToSection(link.href)}
+                  className="nav-link"
+                >
+                  {link.label}
+                </button>
+              )
             ))}
           </div>
 
@@ -121,13 +134,25 @@ const Navbar = () => {
           >
             <div className="px-4 py-4 space-y-3">
               {navLinks.map((link) => (
-                <button
-                  key={link.label}
-                  onClick={() => scrollToSection(link.href)}
-                  className="block w-full text-left nav-link py-2"
-                >
-                  {link.label}
-                </button>
+                link.external ? (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full text-left nav-link py-2"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <button
+                    key={link.label}
+                    onClick={() => scrollToSection(link.href)}
+                    className="block w-full text-left nav-link py-2"
+                  >
+                    {link.label}
+                  </button>
+                )
               ))}
               <div className="pt-3 border-t border-white/10 space-y-2">
                 {user ? (

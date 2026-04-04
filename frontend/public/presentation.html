@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PU Assistant AI - Project Presentation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: #111;
+      --text: #eaeaea;
+      --text-muted: #888;
+      --accent: #3b82f6;
+      --gradient: linear-gradient(135deg, #6c63ff, #00d4ff);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Background Ambient Glow */
+    .glow {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, rgba(108,99,255,0.08) 0%, rgba(0,212,255,0.02) 40%, rgba(5,5,5,0) 70%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 4.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -2px;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    /* Cards Setup */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 2.5rem;
+      text-align: left;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .card p {
+      font-size: 1.05rem;
+      margin: 0;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 2rem;
+      color: var(--text-muted);
+    }
+
+    /* Tech Stack Pills */
+    .tech-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin: 0.5rem;
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+      40% { transform: translateY(-15px) translateX(-50%); }
+      60% { transform: translateY(-7px) translateX(-50%); }
+    }
+
+    /* Reveal Animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media print {
+      body { background: white; color: black; }
+      section { min-height: auto; padding: 2rem 0; page-break-after: always; }
+      .glow { display: none; }
+      h1 { background: none; color: black; -webkit-text-fill-color: black; }
+      .card { background: white; border: 1px solid #ccc; break-inside: avoid; }
+      .card h3, .card p, .tech-pill { color: black; border-color: #ccc; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow"></div>
+
+  <!-- Intro Section -->
+  <section id="home">
+    <div class="container reveal">
+      <div class="badge">Project Presentation</div>
+      <h1>PU Assistant AI</h1>
+      <p>An intelligent, 24/7 campus companion built specifically for Poornima University using modern web technologies and Generative AI.</p>
+      
+      <p style="font-size:1rem; margin-top:3rem; color:#555;">Made by <strong style="color:#aaa;">Siddharth</strong></p>
+      
+      <div class="scroll-indicator">↓</div>
+    </div>
+  </section>
+
+  <!-- Problem Statement Section -->
+  <section id="problem">
+    <div class="container reveal">
+      <div class="badge">The Need</div>
+      <h2>Problem Statement</h2>
+      <p>Current challenges faced by students and university administration.</p>
+      
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">🕒</div>
+          <h3>Information Delay</h3>
+          <p>Students and parents struggle to find specific fees, hostel, or faculty details quickly outside of office hours.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧩</div>
+          <h3>Fragmented Data</h3>
+          <p>University information is scattered across multiple pages, PDFs, and notice boards, making it hard to search.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section id="solution">
+    <div class="container reveal">
+      <div class="badge">The Innovation</div>
+      <h2>Our Solution</h2>
+      <p>A centralized AI Brain for the university using RAG Architecture.</p>
+      
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">🧠</div>
+          <h3>Targeted AI</h3>
+          <p>Unlike standard ChatGPT, this AI operates on a curated database of Poornima University facts, ensuring 100% relevant answers.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3>Instant & 24/7</h3>
+          <p>Users get immediate, conversational answers on admissions, courses, and facilities at any time of day.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🛡️</div>
+          <h3>Admin Control</h3>
+          <p>A secure admin dashboard allows staff to update the AI's knowledge base and post live notices instantly without coding.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack Section -->
+  <section id="techstack">
+    <div class="container reveal">
+      <div class="badge">Engineering</div>
+      <h2>Technology Stack</h2>
+      <p>Built globally on an industrial-grade modern full-stack framework.</p>
+      
+      <div style="margin-top: 3rem;">
+        <div class="tech-pill">⚛️ React.js (Frontend)</div>
+        <div class="tech-pill">🟢 Node.js (Backend)</div>
+        <div class="tech-pill">🍃 MongoDB (Database)</div>
+        <div class="tech-pill">🧠 Google Gemini Pro (AI)</div>
+        <div class="tech-pill">🎨 Tailwind CSS (Styling)</div>
+        <div class="tech-pill">🔐 JWT Auth (Security)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Outro Section -->
+  <section id="demo">
+    <div class="container reveal" style="text-align: center;">
+      <h2 style="font-size: 3rem; margin-bottom: 0.5rem;">Live & Deployed</h2>
+      <p style="color: #666; font-size: 1rem; margin-bottom: 2rem;">The platform is fully operational on cloud infrastructure.</p>
+      
+      <div style="display:inline-block; padding:1.5rem 3rem; border:1px solid rgba(255,255,255,0.1); border-radius:16px; background:#111;">
+        <h3 style="color:#fff; margin-bottom:0.5rem; font-weight:500;">Live URL URL:</h3>
+        <a href="https://pu-assistant-ai.vercel.app" target="_blank" style="color:#00d4ff; text-decoration:none; font-size:1.5rem; font-weight:700;">pu-assistant-ai.vercel.app</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Intersection Observer for scroll animations
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const revealCallback = (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("active");
+          // Optional: stop observing once revealed
+          // observer.unobserve(entry.target);
+        }
+      });
+    };
+
+    const revealOptions = {
+      threshold: 0.15,
+      rootMargin: "0px 0px -50px 0px"
+    };
+
+    const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
+
+    revealElements.forEach(el => revealObserver.observe(el));
+    
+    // Trigger first section immediately
+    setTimeout(() => {
+      document.querySelector('.reveal').classList.add('active');
+    }, 100);
+  </script>
+</body>
+</html>
