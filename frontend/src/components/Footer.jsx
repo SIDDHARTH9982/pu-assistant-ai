@@ -112,7 +112,7 @@ const Footer = () => {
           <div className="flex items-center gap-4">
             {[
               { icon: FaTwitter, href: '#', label: 'Twitter' },
-              { icon: FaLinkedin, href: 'https://linkedin.com/school/poornima-university', label: 'LinkedIn' },
+              { icon: FaLinkedin, href: 'https://www.linkedin.com/in/siddharth-kumawat-556aab3a6/', label: 'LinkedIn' },
               { icon: FaInstagram, href: '#', label: 'Instagram' },
               { icon: FaYoutube, href: '#', label: 'YouTube' },
             ].map(({ icon: Icon, href, label }) => (
