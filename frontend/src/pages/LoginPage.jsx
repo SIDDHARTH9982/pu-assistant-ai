@@ -29,24 +29,35 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark flex">
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center p-12">
-        <div className="hero-glow" />
-        <div className="absolute inset-0 bg-dot-pattern opacity-20" />
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full opacity-20 blur-3xl animate-pulse-slow"
-          style={{ background: 'radial-gradient(circle, #6C63FF, transparent)' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full opacity-20 blur-3xl animate-pulse-slow"
-          style={{ background: 'radial-gradient(circle, #00D4FF, transparent)', animationDelay: '2s' }} />
+    <div className="min-h-screen flex relative overflow-hidden" style={{ background: '#050714' }}>
 
+      {/* Global Orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="orb orb-blue" style={{ width: '600px', height: '600px', top: '-15%', left: '-10%', opacity: 0.6 }} />
+        <div className="orb orb-purple" style={{ width: '500px', height: '500px', bottom: '-10%', right: '-5%', opacity: 0.5 }} />
+        <div className="orb orb-cyan" style={{ width: '300px', height: '300px', top: '50%', left: '40%', opacity: 0.3 }} />
+        <div className="absolute inset-0 star-field opacity-30" />
+      </div>
+      <div className="noise-overlay" />
+
+      {/* Left panel */}
+      <div className="hidden lg:flex lg:w-1/2 relative z-10 overflow-hidden items-center justify-center p-12">
         <div className="relative z-10 text-center max-w-md">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8"
-            style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
-            <Sparkles size={28} className="text-white" />
+          <div
+            className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-10"
+            style={{
+              background: 'linear-gradient(135deg, #4285F4, #8B5CF6)',
+              boxShadow: '0 0 60px rgba(66,133,244,0.5), 0 0 120px rgba(139,92,246,0.2)'
+            }}
+          >
+            <Sparkles size={32} className="text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Welcome to <span className="gradient-text">PU Assistant AI</span>
+
+          <h1 className="text-4xl font-bold text-white mb-4 leading-tight" style={{ letterSpacing: '-0.02em' }}>
+            Welcome to{' '}
+            <span className="gradient-text">PU Assistant AI</span>
           </h1>
-          <p className="text-gray-400 leading-relaxed text-lg">
+          <p className="text-slate-400 leading-relaxed">
             Your intelligent campus companion for Poornima University. Get instant answers about admissions, courses, fees, and more.
           </p>
 
@@ -57,49 +68,63 @@ const LoginPage = () => {
               { label: '20+', sub: 'Topics Covered' },
               { label: '4.9★', sub: 'Average Rating' },
             ].map((stat) => (
-              <div key={stat.label} className="glass rounded-xl p-4">
-                <div className="text-xl font-bold gradient-text">{stat.label}</div>
-                <div className="text-gray-400 text-xs mt-1">{stat.sub}</div>
+              <div
+                key={stat.label}
+                className="rounded-2xl p-4 text-center"
+                style={{
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  backdropFilter: 'blur(16px)'
+                }}
+              >
+                <div className="text-2xl font-bold gradient-text mb-1">{stat.label}</div>
+                <div className="text-slate-500 text-xs">{stat.sub}</div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-8">
+      {/* Right: Form */}
+      <div className="flex-1 flex items-center justify-center p-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="w-full max-w-md"
         >
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
+          <div className="lg:hidden flex items-center gap-2.5 mb-8">
+            <div
+              className="w-8 h-8 rounded-xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)', boxShadow: '0 0 20px rgba(66,133,244,0.4)' }}
+            >
               <Sparkles size={14} className="text-white" />
             </div>
-            <Link to="/" className="font-bold text-white text-lg">PU <span className="gradient-text">Assistant</span></Link>
+            <Link to="/" className="font-bold text-white text-lg">
+              PU <span className="gradient-text-static">Assistant</span>
+            </Link>
           </div>
 
-          <h2 className="text-3xl font-bold text-white mb-2">Sign In</h2>
-          <p className="text-gray-400 mb-8">Welcome back! Sign in to your Poornima AI account.</p>
+          <h2 className="text-3xl font-bold text-white mb-2" style={{ letterSpacing: '-0.02em' }}>Sign In</h2>
+          <p className="text-slate-400 mb-8 text-sm">Welcome back! Sign in to your Poornima AI account.</p>
 
           {error && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-6 text-red-400 text-sm"
+              className="flex items-center gap-2 rounded-2xl p-4 mb-6 text-sm"
+              style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#F87171' }}
             >
-              <AlertCircle size={16} className="flex-shrink-0" />
+              <AlertCircle size={15} className="flex-shrink-0" />
               {error}
             </motion.div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Email Address</label>
               <div className="relative">
-                <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   id="login-email"
                   type="email"
@@ -113,9 +138,9 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
               <div className="relative">
-                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <Lock size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   id="login-password"
                   type={showPassword ? 'text' : 'password'}
@@ -128,9 +153,9 @@ const LoginPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
@@ -142,9 +167,10 @@ const LoginPage = () => {
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
                   id="remember-me"
-                  className="w-4 h-4 rounded border-white/10 bg-white/5 accent-primary-500"
+                  className="w-4 h-4 rounded"
+                  style={{ accentColor: '#4285F4' }}
                 />
-                <span className="text-sm text-gray-400">Remember me</span>
+                <span className="text-sm text-slate-400">Remember me</span>
               </label>
               <button type="button" className="text-sm text-primary-400 hover:text-primary-300 transition-colors">
                 Forgot password?
@@ -156,6 +182,7 @@ const LoginPage = () => {
               disabled={loading}
               id="login-submit"
               className="w-full btn-primary py-3.5 justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ borderRadius: '14px' }}
             >
               {loading ? (
                 <span className="flex items-center gap-2">
@@ -170,27 +197,30 @@ const LoginPage = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="flex-1 h-px bg-white/5" />
-              <span className="text-gray-500 text-xs">Demo Credentials</span>
-              <div className="flex-1 h-px bg-white/5" />
+              <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.05)' }} />
+              <span className="text-slate-600 text-xs">Demo Credentials</span>
+              <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.05)' }} />
             </div>
-            <div className="grid grid-cols-2 gap-3 text-xs text-gray-500 glass rounded-xl p-3">
+            <div
+              className="grid grid-cols-2 gap-3 text-xs text-slate-500 rounded-2xl p-4"
+              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+            >
               <div>
-                <div className="text-gray-400 font-medium mb-1">Student</div>
+                <div className="text-slate-400 font-medium mb-1">Student</div>
                 <div>student@poornima.org</div>
                 <div>Student@123</div>
               </div>
               <div>
-                <div className="text-gray-400 font-medium mb-1">Admin</div>
+                <div className="text-slate-400 font-medium mb-1">Admin</div>
                 <div>admin@poornima.org</div>
                 <div>Admin@PU2024</div>
               </div>
             </div>
           </div>
 
-          <p className="text-center text-gray-400 text-sm mt-6">
+          <p className="text-center text-slate-400 text-sm mt-6">
             Don't have an account?{' '}
             <Link to="/signup" className="text-primary-400 hover:text-primary-300 font-medium transition-colors">
               Create one free

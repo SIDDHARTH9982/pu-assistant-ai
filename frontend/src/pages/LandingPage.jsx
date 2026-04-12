@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles, ArrowRight, MessageSquare, BookOpen, GraduationCap,
   Building, Users, Trophy, ChevronDown, Star, CheckCircle,
@@ -10,16 +10,85 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const fadeUp = {
-  initial: { opacity: 0, y: 30 },
+  initial: { opacity: 0, y: 40 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
-  transition: { duration: 0.6 }
+  transition: { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }
 };
 
 const stagger = {
   initial: {},
   whileInView: { transition: { staggerChildren: 0.1 } },
   viewport: { once: true }
+};
+
+// Animated background orbs — Antigravity style
+const OrbBackground = () => (
+  <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    {/* Blue primary orb - top left */}
+    <div
+      className="orb orb-blue"
+      style={{ width: '700px', height: '700px', top: '-20%', left: '-15%', opacity: 0.7 }}
+    />
+    {/* Purple accent orb - top right */}
+    <div
+      className="orb orb-purple"
+      style={{ width: '600px', height: '600px', top: '-10%', right: '-10%', opacity: 0.6 }}
+    />
+    {/* Cyan orb - center left */}
+    <div
+      className="orb orb-cyan"
+      style={{ width: '400px', height: '400px', top: '40%', left: '5%', opacity: 0.5 }}
+    />
+    {/* Teal orb - bottom right */}
+    <div
+      className="orb orb-teal"
+      style={{ width: '500px', height: '500px', bottom: '-15%', right: '0%', opacity: 0.5 }}
+    />
+    {/* Small blue sparkle - center */}
+    <div
+      className="orb orb-blue"
+      style={{ width: '300px', height: '300px', top: '60%', left: '50%', opacity: 0.3 }}
+    />
+    {/* Star field */}
+    <div className="absolute inset-0 star-field opacity-40" />
+  </div>
+);
+
+// Typing cursor hero title
+const TypingTitle = () => {
+  const words = ['Companion', 'Guide', 'Advisor', 'Assistant'];
+  const [wordIndex, setWordIndex] = useState(0);
+  const [displayed, setDisplayed] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [showCursor, setShowCursor] = useState(true);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    const word = words[wordIndex];
+    if (!deleting) {
+      if (displayed.length < word.length) {
+        timerRef.current = setTimeout(() => setDisplayed(word.slice(0, displayed.length + 1)), 80);
+      } else {
+        timerRef.current = setTimeout(() => setDeleting(true), 2000);
+      }
+    } else {
+      if (displayed.length > 0) {
+        timerRef.current = setTimeout(() => setDisplayed(d => d.slice(0, -1)), 50);
+      } else {
+        setDeleting(false);
+        setWordIndex(i => (i + 1) % words.length);
+      }
+    }
+    return () => clearTimeout(timerRef.current);
+  }, [displayed, deleting, wordIndex]);
+
+  return (
+    <span className="gradient-text">
+      {displayed}
+      <span className="cursor-blink" style={{ fontWeight: 100, marginLeft: '2px' }}>|</span>
+    </span>
+  );
 };
 
 const HeroSection = () => {
@@ -32,43 +101,46 @@ const HeroSection = () => {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       <div className="hero-glow" />
-      <div className="absolute inset-0 bg-dot-pattern opacity-30" />
+      <div className="absolute inset-0 bg-dot-pattern opacity-20" />
 
-      <div className="absolute top-1/4 left-10 w-72 h-72 rounded-full opacity-10 blur-3xl animate-pulse-slow"
-        style={{ background: 'radial-gradient(circle, #6C63FF, transparent)' }} />
-      <div className="absolute bottom-1/4 right-10 w-96 h-96 rounded-full opacity-10 blur-3xl animate-pulse-slow"
-        style={{ background: 'radial-gradient(circle, #00D4FF, transparent)', animationDelay: '2s' }} />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* Left: Hero text */}
           <motion.div {...fadeUp} className="text-center lg:text-left">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-8"
+              transition={{ delay: 0.15, duration: 0.6 }}
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2 mb-8"
+              style={{
+                background: 'rgba(66,133,244,0.1)',
+                border: '1px solid rgba(66,133,244,0.25)',
+                backdropFilter: 'blur(12px)'
+              }}
             >
-              <Sparkles size={14} className="text-primary-400" />
-              <span className="text-sm text-gray-300">Powered by Google Gemini AI</span>
+              <Sparkles size={13} className="text-primary-400" />
+              <span className="text-sm text-blue-300 font-medium">Powered by Google Gemini AI</span>
               <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
             </motion.div>
 
             <h1 className="section-title mb-6">
               Your Smart Campus<br />
-              Companion for<br />
-              <span className="gradient-text">Poornima University</span>
+              <TypingTitle />
+              <br />
+              <span className="text-white">for Poornima University</span>
             </h1>
 
-            <p className="section-subtitle mb-8 max-w-lg mx-auto lg:mx-0">
+            <p className="section-subtitle mb-10 max-w-lg mx-auto lg:mx-0">
               AI-powered answers for admissions, courses, fees, scholarships, placements, hostel, and campus support — all in one place.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link to="/chat" id="hero-try-demo" className="btn-primary text-base px-8 py-4">
                 <MessageSquare size={18} />
-                Try Demo Free
+                <span>Try Demo Free</span>
               </Link>
               <a
                 href="https://poornima.org/admission"
@@ -81,36 +153,46 @@ const HeroSection = () => {
               </a>
             </div>
 
-            <div className="mt-10 flex flex-wrap gap-6 justify-center lg:justify-start">
+            <div className="mt-12 flex flex-wrap gap-6 justify-center lg:justify-start">
               {[
                 { label: '5,000+ Students', icon: Users },
                 { label: 'Gemini Powered', icon: Brain },
                 { label: '20+ Topics', icon: BookOpen },
               ].map(({ label, icon: Icon }) => (
-                <div key={label} className="flex items-center gap-2 text-gray-400 text-sm">
-                  <Icon size={14} className="text-primary-400" />
+                <div key={label} className="flex items-center gap-2 text-blue-300/70 text-sm">
+                  <Icon size={13} className="text-primary-400" />
                   {label}
                 </div>
               ))}
             </div>
           </motion.div>
 
+          {/* Right: Chat preview */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 60 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
+            transition={{ delay: 0.4, duration: 0.9, ease: [0.21, 0.47, 0.32, 0.98] }}
             className="relative"
           >
-            <div className="glass-strong rounded-3xl p-1 shadow-2xl" style={{ boxShadow: '0 0 60px rgba(108,99,255,0.2)' }}>
-              <div className="rounded-[22px] overflow-hidden" style={{ background: '#0D0E24' }}>
-                <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5">
+            <div
+              className="rounded-3xl p-px shadow-2xl"
+              style={{
+                background: 'linear-gradient(135deg, rgba(66,133,244,0.5), rgba(139,92,246,0.4), rgba(6,182,212,0.3))',
+                boxShadow: '0 0 80px rgba(66,133,244,0.25), 0 0 160px rgba(139,92,246,0.1)'
+              }}
+            >
+              <div className="rounded-[23px] overflow-hidden" style={{ background: 'rgba(5,7,20,0.95)', backdropFilter: 'blur(24px)' }}>
+                {/* Window chrome */}
+                <div className="flex items-center gap-2 px-4 py-3.5 border-b border-white/5">
                   <div className="flex gap-1.5">
-                    <span className="w-3 h-3 rounded-full bg-red-500/70" />
-                    <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
-                    <span className="w-3 h-3 rounded-full bg-green-500/70" />
+                    <span className="w-3 h-3 rounded-full bg-red-500/60" />
+                    <span className="w-3 h-3 rounded-full bg-yellow-500/60" />
+                    <span className="w-3 h-3 rounded-full bg-green-500/60" />
                   </div>
                   <div className="flex-1 flex items-center justify-center gap-2">
-                    <Bot size={14} className="text-primary-400" />
+                    <div className="w-5 h-5 rounded flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)' }}>
+                      <Bot size={11} className="text-white" />
+                    </div>
                     <span className="text-xs text-gray-400 font-medium">PU Assistant AI</span>
                     <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                   </div>
@@ -127,16 +209,24 @@ const HeroSection = () => {
                     >
                       <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
                         msg.role === 'user'
-                          ? 'bg-primary-600/30 text-primary-400'
+                          ? 'text-blue-300'
                           : 'text-white'
-                      }`} style={msg.role === 'assistant' ? { background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' } : {}}>
+                      }`} style={
+                        msg.role === 'assistant'
+                          ? { background: 'linear-gradient(135deg, #4285F4, #8B5CF6)' }
+                          : { background: 'rgba(66,133,244,0.15)', border: '1px solid rgba(66,133,244,0.3)' }
+                      }>
                         {msg.role === 'user' ? <UserIcon size={12} /> : <Bot size={12} />}
                       </div>
                       <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-xs leading-relaxed ${
                         msg.role === 'user'
-                          ? 'bg-primary-600/20 text-primary-100 rounded-tr-sm'
-                          : 'glass text-gray-200 rounded-tl-sm'
-                      }`}>
+                          ? 'rounded-tr-sm text-blue-100'
+                          : 'text-gray-200 rounded-tl-sm'
+                      }`}
+                      style={msg.role === 'user'
+                        ? { background: 'linear-gradient(135deg, rgba(66,133,244,0.25), rgba(139,92,246,0.15))' }
+                        : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }
+                      }>
                         {msg.content}
                       </div>
                     </motion.div>
@@ -149,10 +239,11 @@ const HeroSection = () => {
                     className="flex gap-2"
                   >
                     <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-white"
-                      style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
+                      style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)' }}>
                       <Bot size={12} />
                     </div>
-                    <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 flex gap-1.5 items-center">
+                    <div className="rounded-2xl rounded-tl-sm px-4 py-3 flex gap-1.5 items-center"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
                       <span className="typing-dot" />
                       <span className="typing-dot" />
                       <span className="typing-dot" />
@@ -166,32 +257,44 @@ const HeroSection = () => {
                     value={demoInput}
                     onChange={(e) => setDemoInput(e.target.value)}
                     placeholder="Ask about Poornima University..."
-                    className="flex-1 text-xs bg-white/5 rounded-xl px-3 py-2 outline-none text-gray-300 placeholder-gray-600 border border-white/5"
+                    className="flex-1 text-xs rounded-xl px-3 py-2 outline-none text-gray-300 placeholder-gray-600"
+                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
                   />
                   <button className="w-8 h-8 rounded-xl flex items-center justify-center text-white"
-                    style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
+                    style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)' }}>
                     <Send size={12} />
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className="absolute -top-4 -right-4 glass rounded-xl px-3 py-2 text-xs text-white flex items-center gap-2 animate-float">
+            {/* Floating badges */}
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute -top-5 -right-4 rounded-2xl px-4 py-2.5 text-xs text-white flex items-center gap-2"
+              style={{ background: 'rgba(13,16,48,0.9)', border: '1px solid rgba(66,133,244,0.3)', backdropFilter: 'blur(16px)', boxShadow: '0 8px 32px rgba(66,133,244,0.2)' }}
+            >
               <Trophy size={12} className="text-yellow-400" />
               <span>#1 Campus AI Tool</span>
-            </div>
-            <div className="absolute -bottom-4 -left-4 glass rounded-xl px-3 py-2 text-xs text-white flex items-center gap-2 animate-float" style={{ animationDelay: '2s' }}>
+            </motion.div>
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              className="absolute -bottom-5 -left-4 rounded-2xl px-4 py-2.5 text-xs text-white flex items-center gap-2"
+              style={{ background: 'rgba(13,16,48,0.9)', border: '1px solid rgba(139,92,246,0.3)', backdropFilter: 'blur(16px)', boxShadow: '0 8px 32px rgba(139,92,246,0.2)' }}
+            >
               <Star size={12} className="text-yellow-400 fill-yellow-400" />
               <span>4.9/5 Student Rating</span>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-500 text-xs"
+          transition={{ delay: 1.8 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-600 text-xs"
         >
           <span>Scroll to explore</span>
           <ChevronDown size={16} className="animate-bounce" />
@@ -208,11 +311,11 @@ const TrustStrip = () => {
   ];
 
   return (
-    <section className="py-8 border-y border-white/5 overflow-hidden">
-      <div className="flex animate-[scroll_25s_linear_infinite] whitespace-nowrap">
+    <section className="py-6 relative overflow-hidden" style={{ borderTop: '1px solid rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.04)', background: 'rgba(255,255,255,0.015)' }}>
+      <div className="marquee-track">
         {[...items, ...items].map((item, i) => (
-          <div key={i} className="inline-flex items-center gap-3 mx-8 text-gray-500 text-sm font-medium">
-            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }} />
+          <div key={i} className="inline-flex items-center gap-3 mx-10 text-slate-500 text-sm font-medium flex-shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)' }} />
             {item}
           </div>
         ))}
@@ -227,65 +330,77 @@ const FeaturesSection = () => {
       icon: GraduationCap,
       title: 'Admissions Guide',
       desc: 'Step-by-step admission help for all programs. Eligibility, documents, and deadlines at your fingertips.',
-      gradient: 'from-violet-500/20 to-purple-500/10'
+      gradient: 'from-blue-500/20 to-blue-600/5',
+      iconColor: '#4285F4',
     },
     {
       icon: BookOpen,
       title: 'Course Finder',
       desc: 'Explore 50+ programs across Engineering, Management, Law, and Science with detailed curriculum info.',
-      gradient: 'from-cyan-500/20 to-blue-500/10'
+      gradient: 'from-purple-500/20 to-purple-600/5',
+      iconColor: '#8B5CF6',
     },
     {
       icon: Building,
       title: 'Fee & Scholarships',
       desc: 'Get complete fee structure, scholarship eligibility, and financial aid options instantly.',
-      gradient: 'from-emerald-500/20 to-teal-500/10'
+      gradient: 'from-cyan-500/20 to-cyan-600/5',
+      iconColor: '#06B6D4',
     },
     {
       icon: Trophy,
       title: 'Placement Insights',
       desc: 'Know about placement stats, top recruiters, salary packages, and career development programs.',
-      gradient: 'from-orange-500/20 to-amber-500/10'
+      gradient: 'from-amber-500/20 to-amber-600/5',
+      iconColor: '#F59E0B',
     },
     {
       icon: Users,
       title: 'Hostel & Campus',
       desc: 'Complete info about hostel facilities, mess, sports, transport, and campus amenities.',
-      gradient: 'from-pink-500/20 to-rose-500/10'
+      gradient: 'from-emerald-500/20 to-emerald-600/5',
+      iconColor: '#10B981',
     },
     {
       icon: Brain,
       title: 'Smart AI Assistant',
       desc: 'Understands Hinglish, handles typos, and gives structured answers like a real university advisor.',
-      gradient: 'from-indigo-500/20 to-violet-500/10'
+      gradient: 'from-rose-500/20 to-rose-600/5',
+      iconColor: '#F43F5E',
     },
   ];
 
   return (
-    <section id="features" className="py-24 relative">
+    <section id="features" className="py-28 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div {...fadeUp} className="text-center mb-16">
+        <motion.div {...fadeUp} className="text-center mb-20">
           <span className="text-xs font-semibold text-primary-400 uppercase tracking-widest mb-3 block">Platform Features</span>
-          <h2 className="section-title mb-4">Everything You Need to Know<br />About <span className="gradient-text">Poornima University</span></h2>
+          <h2 className="section-title mb-5">
+            Everything You Need to Know<br />
+            About <span className="gradient-text">Poornima University</span>
+          </h2>
           <p className="section-subtitle max-w-2xl mx-auto">
             One AI assistant covering every aspect of university life — from the first inquiry to graduation day.
           </p>
         </motion.div>
 
-        <motion.div {...stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div {...stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((f, i) => {
             const Icon = f.icon;
             return (
               <motion.div
                 key={i}
-                variants={{ initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 } }}
-                className="card group cursor-default"
+                variants={{ initial: { opacity: 0, y: 24 }, whileInView: { opacity: 1, y: 0 } }}
+                className="card group cursor-default gradient-border"
               >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <Icon size={22} className="text-white" />
+                <div
+                  className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}
+                  style={{ border: `1px solid ${f.iconColor}22` }}
+                >
+                  <Icon size={22} style={{ color: f.iconColor }} />
                 </div>
-                <h3 className="font-semibold text-white mb-2">{f.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
+                <h3 className="font-semibold text-white mb-2 text-base">{f.title}</h3>
+                <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
               </motion.div>
             );
           })}
@@ -304,14 +419,17 @@ const WhySection = () => {
   ];
 
   return (
-    <section className="py-24 relative overflow-hidden">
-      <div className="absolute inset-0 bg-grid-pattern opacity-20" />
+    <section className="py-28 relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid-pattern opacity-15" />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-20 items-center">
           <motion.div {...fadeUp}>
             <span className="text-xs font-semibold text-primary-400 uppercase tracking-widest mb-3 block">Why PU Assistant AI</span>
-            <h2 className="section-title mb-6">Built for the Poornima<br /><span className="gradient-text">University Community</span></h2>
-            <p className="text-gray-400 leading-relaxed mb-8">
+            <h2 className="section-title mb-6">
+              Built for the Poornima<br />
+              <span className="gradient-text">University Community</span>
+            </h2>
+            <p className="text-slate-400 leading-relaxed mb-10 text-sm max-w-md">
               Thousands of students, parents, and aspirants visit Poornima University every year with questions. PU Assistant AI is designed to answer them instantly, accurately, and beautifully.
             </p>
             <Link to="/signup" className="btn-primary">
@@ -328,13 +446,15 @@ const WhySection = () => {
                   variants={{ initial: { opacity: 0, x: 30 }, whileInView: { opacity: 1, x: 0 } }}
                   className="flex gap-4 card"
                 >
-                  <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'linear-gradient(135deg, rgba(108,99,255,0.2), rgba(0,212,255,0.1))' }}>
+                  <div
+                    className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'linear-gradient(135deg, rgba(66,133,244,0.15), rgba(139,92,246,0.1))', border: '1px solid rgba(66,133,244,0.2)' }}
+                  >
                     <Icon size={18} className="text-primary-400" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-white mb-1 text-sm">{b.title}</h4>
-                    <p className="text-gray-400 text-sm leading-relaxed">{b.desc}</p>
+                    <p className="text-slate-400 text-sm leading-relaxed">{b.desc}</p>
                   </div>
                 </motion.div>
               );
@@ -393,12 +513,16 @@ const UseCasesSection = () => {
   ];
 
   return (
-    <section id="use-cases" className="py-24">
+    <section id="use-cases" className="py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div {...fadeUp} className="text-center mb-16">
           <span className="text-xs font-semibold text-primary-400 uppercase tracking-widest mb-3 block">Use Cases</span>
-          <h2 className="section-title mb-4">Built for <span className="gradient-text">Everyone</span> at Poornima</h2>
-          <p className="section-subtitle max-w-xl mx-auto">Whether you're a student, parent, aspirant, or faculty — PU Assistant AI speaks your language.</p>
+          <h2 className="section-title mb-4">
+            Built for <span className="gradient-text">Everyone</span> at Poornima
+          </h2>
+          <p className="section-subtitle max-w-xl mx-auto">
+            Whether you're a student, parent, aspirant, or faculty — PU Assistant AI speaks your language.
+          </p>
         </motion.div>
 
         <motion.div {...fadeUp}>
@@ -409,14 +533,17 @@ const UseCasesSection = () => {
                 <button
                   key={i}
                   onClick={() => setActiveTab(i)}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-2xl text-sm font-medium transition-all duration-300 ${
                     activeTab === i
-                      ? 'text-white shadow-lg shadow-primary/30'
-                      : 'glass text-gray-400 hover:text-white'
+                      ? 'text-white'
+                      : 'text-slate-400 hover:text-white'
                   }`}
-                  style={activeTab === i ? { background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' } : {}}
+                  style={activeTab === i
+                    ? { background: 'linear-gradient(135deg, #4285F4, #8B5CF6)', boxShadow: '0 4px 20px rgba(66,133,244,0.35)' }
+                    : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }
+                  }
                 >
-                  <Icon size={16} />
+                  <Icon size={15} />
                   {tab.label}
                 </button>
               );
@@ -424,25 +551,28 @@ const UseCasesSection = () => {
           </div>
 
           <div className="max-w-2xl mx-auto">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="card space-y-4"
-            >
-              {tabs[activeTab].scenarios.map((scenario, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <CheckCircle size={18} className="text-primary-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-300 text-sm leading-relaxed">{scenario}</span>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.35 }}
+                className="card space-y-4"
+              >
+                {tabs[activeTab].scenarios.map((scenario, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <CheckCircle size={16} className="text-primary-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-300 text-sm leading-relaxed">{scenario}</span>
+                  </div>
+                ))}
+                <div className="pt-4 border-t border-white/5">
+                  <Link to="/chat" className="btn-primary text-sm py-2.5">
+                    Try as {tabs[activeTab].label} <ArrowRight size={14} />
+                  </Link>
                 </div>
-              ))}
-              <div className="pt-4 border-t border-white/5">
-                <Link to="/chat" className="btn-primary text-sm py-2.5">
-                  Try as {tabs[activeTab].label} <ArrowRight size={14} />
-                </Link>
-              </div>
-            </motion.div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </motion.div>
       </div>
@@ -508,30 +638,34 @@ const PricingSection = () => {
   ];
 
   return (
-    <section id="pricing" className="py-24">
+    <section id="pricing" className="py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div {...fadeUp} className="text-center mb-16">
           <span className="text-xs font-semibold text-primary-400 uppercase tracking-widest mb-3 block">Pricing</span>
-          <h2 className="section-title mb-4">Simple, <span className="gradient-text">Transparent</span> Pricing</h2>
-          <p className="section-subtitle max-w-xl mx-auto">Access Poornima University's AI assistant at every level — from students to administration.</p>
+          <h2 className="section-title mb-4">
+            Simple, <span className="gradient-text">Transparent</span> Pricing
+          </h2>
+          <p className="section-subtitle max-w-xl mx-auto">
+            Access Poornima University's AI assistant at every level — from students to administration.
+          </p>
         </motion.div>
 
-        <motion.div {...stagger} className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <motion.div {...stagger} className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {plans.map((plan, i) => (
             <motion.div
               key={i}
               variants={{ initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 } }}
-              className={`relative rounded-2xl p-8 flex flex-col ${
-                plan.highlight
-                  ? 'border border-primary-500/50 shadow-2xl shadow-primary-500/20'
-                  : 'glass'
-              }`}
-              style={plan.highlight ? { background: 'linear-gradient(135deg, rgba(108,99,255,0.1), rgba(0,212,255,0.05))' } : {}}
+              className={`relative rounded-3xl p-8 flex flex-col transition-all duration-300 ${plan.highlight ? '' : 'card'}`}
+              style={plan.highlight ? {
+                background: 'linear-gradient(160deg, rgba(66,133,244,0.12), rgba(139,92,246,0.08))',
+                border: '1px solid rgba(66,133,244,0.35)',
+                boxShadow: '0 0 60px rgba(66,133,244,0.15), inset 0 1px 0 rgba(255,255,255,0.08)'
+              } : {}}
             >
               {plan.highlight && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="text-xs font-bold text-white px-4 py-1.5 rounded-full"
-                    style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
+                  <span className="text-xs font-bold text-white px-5 py-1.5 rounded-full"
+                    style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)' }}>
                     Most Popular
                   </span>
                 </div>
@@ -541,15 +675,15 @@ const PricingSection = () => {
                 <h3 className="font-bold text-white text-lg mb-1">{plan.name}</h3>
                 <div className="flex items-end gap-1 mb-2">
                   <span className="text-4xl font-bold text-white">{plan.price}</span>
-                  <span className="text-gray-400 text-sm mb-1">/{plan.period}</span>
+                  <span className="text-slate-400 text-sm mb-1">/{plan.period}</span>
                 </div>
-                <p className="text-gray-400 text-sm">{plan.desc}</p>
+                <p className="text-slate-400 text-sm">{plan.desc}</p>
               </div>
 
               <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((f, j) => (
-                  <li key={j} className="flex items-center gap-2 text-sm text-gray-300">
-                    <CheckCircle size={15} className="text-primary-400 flex-shrink-0" />
+                  <li key={j} className="flex items-center gap-2 text-sm text-slate-300">
+                    <CheckCircle size={14} className="text-primary-400 flex-shrink-0" />
                     {f}
                   </li>
                 ))}
@@ -557,10 +691,8 @@ const PricingSection = () => {
 
               <Link
                 to={plan.href}
-                className={`text-center py-3 px-6 rounded-xl font-semibold text-sm transition-all duration-300 ${
-                  plan.highlight
-                    ? 'btn-primary'
-                    : 'btn-secondary'
+                className={`text-center py-3 px-6 rounded-2xl font-semibold text-sm transition-all duration-300 ${
+                  plan.highlight ? 'btn-primary justify-center' : 'btn-secondary justify-center'
                 }`}
               >
                 {plan.cta}
@@ -614,34 +746,38 @@ const TestimonialsSection = () => {
   ];
 
   return (
-    <section className="py-24 overflow-hidden">
+    <section className="py-28 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div {...fadeUp} className="text-center mb-16">
           <span className="text-xs font-semibold text-primary-400 uppercase tracking-widest mb-3 block">Testimonials</span>
-          <h2 className="section-title mb-4">Loved by the <span className="gradient-text">Poornima Community</span></h2>
+          <h2 className="section-title mb-4">
+            Loved by the <span className="gradient-text">Poornima Community</span>
+          </h2>
         </motion.div>
 
-        <motion.div {...stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div {...stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {testimonials.map((t, i) => (
             <motion.div
               key={i}
-              variants={{ initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 } }}
+              variants={{ initial: { opacity: 0, y: 24 }, whileInView: { opacity: 1, y: 0 } }}
               className="card"
             >
               <div className="flex items-center gap-1 mb-4">
                 {Array.from({ length: t.rating }).map((_, j) => (
-                  <Star key={j} size={14} className="text-yellow-400 fill-yellow-400" />
+                  <Star key={j} size={13} className="text-yellow-400 fill-yellow-400" />
                 ))}
               </div>
-              <p className="text-gray-300 text-sm leading-relaxed mb-5">"{t.content}"</p>
+              <p className="text-slate-300 text-sm leading-relaxed mb-5">"{t.content}"</p>
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                  style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                  style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)' }}
+                >
                   {t.name[0]}
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">{t.name}</p>
-                  <p className="text-gray-500 text-xs">{t.role}</p>
+                  <p className="text-slate-500 text-xs">{t.role}</p>
                 </div>
               </div>
             </motion.div>
@@ -691,11 +827,13 @@ const FAQSection = () => {
   ];
 
   return (
-    <section id="faq" className="py-24">
+    <section id="faq" className="py-28">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div {...fadeUp} className="text-center mb-16">
           <span className="text-xs font-semibold text-primary-400 uppercase tracking-widest mb-3 block">FAQ</span>
-          <h2 className="section-title mb-4">Frequently Asked <span className="gradient-text">Questions</span></h2>
+          <h2 className="section-title mb-4">
+            Frequently Asked <span className="gradient-text">Questions</span>
+          </h2>
         </motion.div>
 
         <motion.div {...stagger} className="space-y-3">
@@ -709,19 +847,22 @@ const FAQSection = () => {
               <div className="flex items-center justify-between gap-4">
                 <h4 className="font-medium text-white text-sm">{faq.q}</h4>
                 <ChevronDown
-                  size={18}
-                  className={`text-gray-400 flex-shrink-0 transition-transform duration-300 ${openIndex === i ? 'rotate-180' : ''}`}
+                  size={17}
+                  className={`text-slate-400 flex-shrink-0 transition-transform duration-300 ${openIndex === i ? 'rotate-180' : ''}`}
                 />
               </div>
-              {openIndex === i && (
-                <motion.p
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  className="text-gray-400 text-sm mt-3 leading-relaxed border-t border-white/5 pt-3"
-                >
-                  {faq.a}
-                </motion.p>
-              )}
+              <AnimatePresence>
+                {openIndex === i && (
+                  <motion.p
+                    initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                    animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                    className="text-slate-400 text-sm leading-relaxed border-t border-white/5 pt-3"
+                  >
+                    {faq.a}
+                  </motion.p>
+                )}
+              </AnimatePresence>
             </motion.div>
           ))}
         </motion.div>
@@ -731,18 +872,21 @@ const FAQSection = () => {
 };
 
 const CTASection = () => (
-  <section className="py-24 relative overflow-hidden">
-    <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(108,99,255,0.15), rgba(0,212,255,0.08))' }} />
-    <div className="absolute inset-0 bg-dot-pattern opacity-20" />
+  <section className="py-28 relative overflow-hidden">
+    <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(66,133,244,0.15) 0%, rgba(139,92,246,0.08) 40%, transparent 70%)' }} />
+    <div className="absolute inset-0 bg-dot-pattern opacity-15" />
 
     <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <motion.div {...fadeUp}>
-        <Sparkles size={48} className="text-primary-400 mx-auto mb-6" />
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+        <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8"
+          style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)', boxShadow: '0 0 60px rgba(66,133,244,0.4)' }}>
+          <Sparkles size={36} className="text-white" />
+        </div>
+        <h2 className="section-title mb-6">
           Ready to Explore<br />
           <span className="gradient-text">Poornima University</span>?
         </h2>
-        <p className="section-subtitle mb-10 max-w-xl mx-auto">
+        <p className="section-subtitle mb-12 max-w-xl mx-auto">
           Join thousands of students and parents who use PU Assistant AI to get instant answers about campus, admissions, and more.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -765,18 +909,25 @@ const CTASection = () => (
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-dark">
-      <Navbar />
-      <HeroSection />
-      <TrustStrip />
-      <FeaturesSection />
-      <WhySection />
-      <UseCasesSection />
-      <PricingSection />
-      <TestimonialsSection />
-      <FAQSection />
-      <CTASection />
-      <Footer />
+    <div className="min-h-screen relative" style={{ background: '#050714' }}>
+      {/* Global animated orb background */}
+      <OrbBackground />
+      {/* Noise overlay */}
+      <div className="noise-overlay" />
+
+      <div className="relative z-10">
+        <Navbar />
+        <HeroSection />
+        <TrustStrip />
+        <FeaturesSection />
+        <WhySection />
+        <UseCasesSection />
+        <PricingSection />
+        <TestimonialsSection />
+        <FAQSection />
+        <CTASection />
+        <Footer />
+      </div>
     </div>
   );
 };

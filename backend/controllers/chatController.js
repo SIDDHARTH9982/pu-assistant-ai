@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 import Chat from '../models/Chat.js';
 import KnowledgeEntry from '../models/KnowledgeEntry.js';
 
@@ -60,22 +60,30 @@ export const sendMessage = async (req, res) => {
 
     const systemPrompt = buildSystemPrompt(knowledgeContext);
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash',
-      systemInstruction: systemPrompt
-    });
-
     let chat = chatId ? await Chat.findOne({ _id: chatId, userId }) : null;
 
-    const historyForGemini = chat ? chat.messages.slice(-10).map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
+    const messageHistory = chat ? chat.messages.slice(-10).map(m => ({
+      role: m.role,
+      content: m.content
     })) : [];
 
-    const chatSession = model.startChat({ history: historyForGemini });
-    const result = await chatSession.sendMessage(message);
-    const assistantReply = result.response.text();
+    messageHistory.push({ role: 'user', content: message });
+
+    const openai = new OpenAI({
+      baseURL: "https://openrouter.ai/api/v1",
+      apiKey: process.env.OPENROUTER_API_KEY,
+    });
+
+    const completion = await openai.chat.completions.create({
+      model: "google/gemini-2.5-flash", 
+      max_tokens: 2000,
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...messageHistory
+      ]
+    });
+
+    const assistantReply = completion.choices[0].message.content;
 
     if (chat) {
       chat.messages.push({ role: 'user', content: message });

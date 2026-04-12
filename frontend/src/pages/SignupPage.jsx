@@ -43,23 +43,37 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark flex">
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center p-12">
-        <div className="hero-glow" />
-        <div className="absolute inset-0 bg-dot-pattern opacity-20" />
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full opacity-20 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #6C63FF, transparent)' }} />
+    <div className="min-h-screen flex relative overflow-hidden" style={{ background: '#050714' }}>
+
+      {/* Global Orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="orb orb-purple" style={{ width: '600px', height: '600px', top: '-15%', left: '-10%', opacity: 0.55 }} />
+        <div className="orb orb-blue" style={{ width: '500px', height: '500px', bottom: '-10%', right: '-5%', opacity: 0.5 }} />
+        <div className="orb orb-cyan" style={{ width: '350px', height: '350px', top: '40%', left: '35%', opacity: 0.3 }} />
+        <div className="absolute inset-0 star-field opacity-30" />
+      </div>
+      <div className="noise-overlay" />
+
+      {/* Left panel */}
+      <div className="hidden lg:flex lg:w-1/2 relative z-10 items-center justify-center p-12">
         <div className="relative z-10 text-center max-w-md">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8"
-            style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
-            <Sparkles size={28} className="text-white" />
+          <div
+            className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-10"
+            style={{
+              background: 'linear-gradient(135deg, #8B5CF6, #4285F4)',
+              boxShadow: '0 0 60px rgba(139,92,246,0.5), 0 0 120px rgba(66,133,244,0.2)'
+            }}
+          >
+            <Sparkles size={32} className="text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-white mb-4">
+
+          <h2 className="text-4xl font-bold text-white mb-4 leading-tight" style={{ letterSpacing: '-0.02em' }}>
             Join <span className="gradient-text">PU Assistant AI</span>
           </h2>
-          <p className="text-gray-400 leading-relaxed mb-10">
+          <p className="text-slate-400 leading-relaxed mb-10">
             Create your account and get instant access to AI-powered answers for everything Poornima University.
           </p>
+
           <div className="space-y-4 text-left">
             {[
               'Instant answers about admissions & courses',
@@ -68,48 +82,59 @@ const SignupPage = () => {
               'Chat history & personalized experience',
             ].map((item) => (
               <div key={item} className="flex items-center gap-3">
-                <CheckCircle size={18} className="text-primary-400 flex-shrink-0" />
-                <span className="text-gray-300 text-sm">{item}</span>
+                <div
+                  className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: 'rgba(66,133,244,0.15)', border: '1px solid rgba(66,133,244,0.3)' }}
+                >
+                  <CheckCircle size={12} className="text-primary-400" />
+                </div>
+                <span className="text-slate-300 text-sm">{item}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-8">
+      {/* Right: Form */}
+      <div className="flex-1 flex items-center justify-center p-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] }}
           className="w-full max-w-md"
         >
-          <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
+          <div className="lg:hidden flex items-center gap-2.5 mb-8">
+            <div
+              className="w-8 h-8 rounded-xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)', boxShadow: '0 0 20px rgba(66,133,244,0.4)' }}
+            >
               <Sparkles size={14} className="text-white" />
             </div>
-            <Link to="/" className="font-bold text-white text-lg">PU <span className="gradient-text">Assistant</span></Link>
+            <Link to="/" className="font-bold text-white text-lg">
+              PU <span className="gradient-text-static">Assistant</span>
+            </Link>
           </div>
 
-          <h2 className="text-3xl font-bold text-white mb-2">Create Account</h2>
-          <p className="text-gray-400 mb-8">Join Poornima University's AI assistant platform.</p>
+          <h2 className="text-3xl font-bold text-white mb-2" style={{ letterSpacing: '-0.02em' }}>Create Account</h2>
+          <p className="text-slate-400 mb-8 text-sm">Join Poornima University's AI assistant platform.</p>
 
           {error && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-6 text-red-400 text-sm"
+              className="flex items-center gap-2 rounded-2xl p-4 mb-6 text-sm"
+              style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#F87171' }}
             >
-              <AlertCircle size={16} className="flex-shrink-0" />
+              <AlertCircle size={15} className="flex-shrink-0" />
               {error}
             </motion.div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Full Name</label>
               <div className="relative">
-                <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <User size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   id="signup-name"
                   type="text"
@@ -124,9 +149,9 @@ const SignupPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Email Address</label>
               <div className="relative">
-                <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   id="signup-email"
                   type="email"
@@ -141,9 +166,9 @@ const SignupPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
               <div className="relative">
-                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <Lock size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   id="signup-password"
                   type={showPassword ? 'text' : 'password'}
@@ -157,16 +182,16 @@ const SignupPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
               {form.password && (
-                <div className="flex gap-3 mt-2">
+                <div className="flex gap-4 mt-2.5">
                   {passwordChecks.map((check) => (
-                    <div key={check.label} className={`flex items-center gap-1 text-xs ${check.pass ? 'text-green-400' : 'text-gray-500'}`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${check.pass ? 'bg-green-400' : 'bg-gray-600'}`} />
+                    <div key={check.label} className={`flex items-center gap-1.5 text-xs ${check.pass ? 'text-green-400' : 'text-slate-600'}`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${check.pass ? 'bg-green-400' : 'bg-slate-700'}`} />
                       {check.label}
                     </div>
                   ))}
@@ -175,9 +200,9 @@ const SignupPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label>
+              <label className="block text-sm font-medium text-slate-300 mb-2">Confirm Password</label>
               <div className="relative">
-                <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <Lock size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                 <input
                   id="signup-confirm"
                   type="password"
@@ -196,6 +221,7 @@ const SignupPage = () => {
               disabled={loading}
               id="signup-submit"
               className="w-full btn-primary py-3.5 justify-center mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ borderRadius: '14px' }}
             >
               {loading ? (
                 <span className="flex items-center gap-2">
@@ -210,17 +236,17 @@ const SignupPage = () => {
             </button>
           </form>
 
-          <p className="text-center text-gray-400 text-sm mt-6">
+          <p className="text-center text-slate-400 text-sm mt-6">
             Already have an account?{' '}
             <Link to="/login" className="text-primary-400 hover:text-primary-300 font-medium transition-colors">
               Sign in
             </Link>
           </p>
 
-          <p className="text-center text-gray-600 text-xs mt-4">
+          <p className="text-center text-slate-700 text-xs mt-4">
             By creating an account you agree to our{' '}
-            <span className="text-gray-500">Terms of Service</span> and{' '}
-            <span className="text-gray-500">Privacy Policy</span>.
+            <span className="text-slate-600">Terms of Service</span> and{' '}
+            <span className="text-slate-600">Privacy Policy</span>.
           </p>
         </motion.div>
       </div>

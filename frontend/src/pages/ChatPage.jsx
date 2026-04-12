@@ -54,7 +54,7 @@ const MessageBubble = ({ message }) => {
         isUser
           ? 'bg-primary-600/30 text-primary-400'
           : 'text-white'
-      }`} style={!isUser ? { background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' } : {}}>
+      }`} style={!isUser ? { background: 'linear-gradient(135deg, #4285F4, #8B5CF6)' } : { background: 'rgba(66,133,244,0.12)', border: '1px solid rgba(66,133,244,0.2)' }}>
         {isUser ? <UserIcon size={14} /> : <Bot size={14} />}
       </div>
 
@@ -64,7 +64,7 @@ const MessageBubble = ({ message }) => {
             ? 'rounded-tr-sm text-primary-100'
             : 'rounded-tl-sm glass text-gray-200'
         }`}
-        style={isUser ? { background: 'linear-gradient(135deg, rgba(108,99,255,0.3), rgba(0,212,255,0.15))' } : {}}>
+        style={isUser ? { background: 'linear-gradient(135deg, rgba(66,133,244,0.25), rgba(139,92,246,0.15))' } : {}}>
           {isUser ? (
             <p>{message.content}</p>
           ) : (
@@ -241,18 +241,18 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="h-screen bg-dark flex overflow-hidden">
-      <div className={`fixed inset-y-0 left-0 z-50 w-72 glass border-r border-white/5 flex flex-col transform transition-transform duration-300 lg:relative lg:translate-x-0 ${
+    <div className="h-screen flex overflow-hidden" style={{ background: '#050714' }}>
+      <div className={`fixed inset-y-0 left-0 z-50 w-72 flex flex-col transform transition-transform duration-300 lg:relative lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
+      }`} style={{ background: 'rgba(5,7,20,0.95)', backdropFilter: 'blur(24px)', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="p-4 border-b border-white/5">
           <div className="flex items-center justify-between mb-4">
             <Link to="/" className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
+                style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)', boxShadow: '0 0 14px rgba(66,133,244,0.4)' }}>
                 <Sparkles size={13} className="text-white" />
               </div>
-              <span className="font-bold text-white text-sm">PU <span className="gradient-text">Assistant</span></span>
+              <span className="font-bold text-white text-sm">PU <span className="gradient-text-static">Assistant</span></span>
             </Link>
             <button className="lg:hidden text-gray-400" onClick={() => setSidebarOpen(false)}>
               <X size={18} />
@@ -276,8 +276,9 @@ const ChatPage = () => {
                 key={chat._id}
                 onClick={() => { loadChat(chat._id); setSidebarOpen(false); }}
                 className={`w-full flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl text-left transition-all duration-200 group ${
-                  chatId === chat._id ? 'bg-primary-500/10 border border-primary-500/20' : 'hover:bg-white/5'
-                }`}
+                    chatId === chat._id ? '' : 'hover:bg-white/4'
+                  }`}
+                style={chatId === chat._id ? { background: 'rgba(66,133,244,0.08)', border: '1px solid rgba(66,133,244,0.2)' } : {}}
               >
                 <div className="flex items-center gap-2 min-w-0">
                   <MessageSquare size={13} className="text-gray-500 flex-shrink-0" />
@@ -312,13 +313,13 @@ const ChatPage = () => {
       )}
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="glass border-b border-white/5 px-4 py-3 flex items-center gap-3 flex-shrink-0">
+        <header className="px-4 py-3 flex items-center gap-3 flex-shrink-0" style={{ background: 'rgba(5,7,20,0.85)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <button className="lg:hidden text-gray-400 hover:text-white" onClick={() => setSidebarOpen(true)}>
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2 flex-1">
             <div className="w-7 h-7 rounded-full flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
+              style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)', boxShadow: '0 0 12px rgba(66,133,244,0.4)' }}>
               <Bot size={14} className="text-white" />
             </div>
             <div>
@@ -344,7 +345,7 @@ const ChatPage = () => {
                 className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4"
               >
                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 animate-float"
-                  style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
+                  style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)', boxShadow: '0 0 40px rgba(66,133,244,0.4)' }}>
                   <Bot size={28} className="text-white" />
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-2">Hi {user?.name?.split(' ')[0]}! 👋</h2>
@@ -375,7 +376,7 @@ const ChatPage = () => {
                     className="flex gap-3"
                   >
                     <div className="w-8 h-8 rounded-full flex items-center justify-center text-white flex-shrink-0"
-                      style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}>
+                      style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)' }}>
                       <Bot size={14} />
                     </div>
                     <div className="glass rounded-2xl rounded-tl-sm">
@@ -403,9 +404,11 @@ const ChatPage = () => {
           </div>
         )}
 
-        <div className="p-4 border-t border-white/5 flex-shrink-0">
+        <div className="p-4 flex-shrink-0" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
           <div className="flex gap-3 items-end max-w-4xl mx-auto">
-            <div className="flex-1 glass rounded-2xl border border-white/10 focus-within:border-primary-500/50 transition-colors">
+            <div className="flex-1 rounded-2xl transition-all duration-300" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+              onFocus={e => e.currentTarget.style.borderColor = 'rgba(66,133,244,0.5)'}
+              onBlur={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'}>
               <textarea
                 ref={inputRef}
                 value={input}
@@ -438,7 +441,7 @@ const ChatPage = () => {
               disabled={!input.trim() || loading}
               id="chat-send"
               className="w-11 h-11 rounded-xl flex items-center justify-center text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, #6C63FF, #00D4FF)' }}
+              style={{ background: 'linear-gradient(135deg, #4285F4, #8B5CF6)', boxShadow: '0 4px 20px rgba(66,133,244,0.3)' }}
             >
               <Send size={17} />
             </button>
