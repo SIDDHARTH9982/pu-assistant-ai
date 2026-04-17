@@ -70,7 +70,7 @@ export const sendMessage = async (req, res) => {
     messageHistory.push({ role: 'user', content: message });
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Build Gemini chat history (exclude last user message)
     const geminiHistory = messageHistory.slice(0, -1).map(m => ({
